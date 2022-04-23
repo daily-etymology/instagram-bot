@@ -2,14 +2,13 @@
 # -*- coding: utf-8 -*-
 
 # ffmpeg -r 60 -i example%d.png -c:v libx264 -preset veryslow -crf 18 -pix_fmt yuv420p o.mp4 -y
+# ffmpeg -i o.mp4 -vf "fps=10,scale=320:-1:flags=lanczos,split[s0][s1];[s0]palettegen[p];[s1][p]paletteuse" -loop 0 o.gif
 
 from pathlib import Path
 
 from display import Display
 import drawSvg as draw
-        
 
-display = Display()
 
 
 if __name__ == "__main__":
@@ -18,11 +17,13 @@ if __name__ == "__main__":
     
     SCREEN_WIDTH = 1000
     SCREEN_HEIGHT = 1000
+            
+    print("generating frames")
+    display = Display()
     
-    
+    print("exporting frames")
     for c,frame in enumerate(display.frames):
         d = draw.Drawing(SCREEN_WIDTH, SCREEN_HEIGHT, origin='center', displayInline=False)
-    
         
         for f in frame:
             if f == {}:
@@ -57,3 +58,6 @@ if __name__ == "__main__":
                     #             stroke='red', stroke_width=2))
         
         d.savePng('frames/example{}.png'.format(c))
+        
+        print(f"\rframe:{c + 1} out of {len(display.frames)} \t {100*(c + 1)/len(display.frames):.3f}%", end="")
+    print()  # New line

@@ -11,7 +11,6 @@ from background import Background
 from random import random, randint
 from bubble import Bubble
 from polygon import Polygon
-from polygon_boundary import PolygonBoundary
 from colour_library import  RGB_to_hex
 
 class Animated_object():    
@@ -132,10 +131,6 @@ class Animated_object():
                 opacity,
                 phi = phi
                 )
-        
-        if object_type == "polygon_boundary":
-            pass
-        
         
         self.the_object = the_object
         

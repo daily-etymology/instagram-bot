@@ -34,7 +34,6 @@ class PolygonBoundary():
             n_points_per_side[i] += 1
         if debug:
             print(n_points_per_side,remainder)
-        inner_points = []
         
         if debug:
             print()
