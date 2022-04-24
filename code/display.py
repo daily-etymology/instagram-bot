@@ -133,13 +133,27 @@ class Display():
                             start_time = 0, 
                             object_type = "polygon",
                             theme = theme)
+        
         objects.append(b)
         
         # Pivot points of the polygon 
         # used for the polygon boundary
         b.the_object.pivot_points
         
-        #PolygonBoundary
+        boundary_0 = PolygonBoundary(b.the_object.pivot_points,
+                        self.duration, self.frame_rate,
+                        n_repeats = 2,
+                        total_duration=self.duration,
+                        theme = {"style":"pivot_and_inner"}
+                        )
+
+        for particle in boundary_0.particles:
+            b = Animated_object(duration = particle["duration"], 
+                                start_time = particle["start_time"], 
+                                object_type = particle["object_type"],
+                                theme = particle)
+            objects.append(b)
+            
         
         return objects
     
