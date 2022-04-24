@@ -15,8 +15,7 @@ from random import randint
 from colour_library import  RGB_to_hex, hsv_palette_generator, invert_colour
 
 from animated_object import Animated_object
-
-
+from polygon_boundary import PolygonBoundary
 
 class Display():
     def __init__(self,
@@ -48,7 +47,7 @@ class Display():
         
         objects = []
         bg_colour = palettes[0]
-        b = Animated_object(duration = int(np.ceil(self.duration * self.frame_rate)), 
+        b = Animated_object(duration = self.duration, 
                             start_time = 0, 
                             object_type = "background",
                             theme = {"start_colour":RGB_to_hex(
@@ -112,11 +111,12 @@ class Display():
                 )
             
             duration = int(np.ceil(np.random.uniform(min_duration,
-                                         max_duration)  * self.frame_rate))
-            start_time = int(np.ceil(np.random.uniform(0,self.duration) * self.frame_rate))
+                                         max_duration)))
+            start_time = int(np.ceil(np.random.uniform(0,self.duration) ))
             
             b = Animated_object(duration = duration, 
                                 start_time = start_time, 
+                                object_type = "bubble",
                                 theme = theme)
             objects.append(b)
         
@@ -129,7 +129,7 @@ class Display():
             "phi" : 5 * np.pi / 2
             }
         
-        b = Animated_object(duration = int(np.ceil(self.duration * self.frame_rate)), 
+        b = Animated_object(duration = self.duration, 
                             start_time = 0, 
                             object_type = "polygon",
                             theme = theme)
@@ -139,10 +139,12 @@ class Display():
         # used for the polygon boundary
         b.the_object.pivot_points
         
+        #PolygonBoundary
+        
         return objects
     
     def combine_objects(self, objects):
-        n_frames = int(np.ceil(self.frame_rate * self.duration))
+        n_frames = self.duration * self.frame_rate
         
         frames = []
         

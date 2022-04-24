@@ -11,6 +11,7 @@ from background import Background
 from random import random, randint
 from bubble import Bubble
 from polygon import Polygon
+from polygon_boundary import PolygonBoundary
 from colour_library import  RGB_to_hex
 
 class Animated_object():    
@@ -24,17 +25,17 @@ class Animated_object():
         """
         Parameters
         ----------
-        duration : INT
-            total number of frames of the animated object.
-        start_time : TYPE
+        duration : float
+            Duration in seconds.
+        start_time : float
             animation frame start number.
-        total_duration : TYPE, optional
+        total_duration : float, optional
             total animation duration in seconds. The default is 10.
-        frame_rate : TYPE, optional
+        frame_rate : float, optional
             frame rate of the animation. The default is 60.
-        object_type : TYPE, optional
+        object_type : class, optional
             Type of the animated object. The default is "bubble".
-        theme : TYPE, optional
+        theme : dict, optional
             dictionary of the theme parameters for the theme. The default is {}.
 
         Returns
@@ -135,28 +136,29 @@ class Animated_object():
         self.the_object = the_object
         
         # Check that duration value is valid
-        assert duration <= total_duration * frame_rate, "Animation of the object is longer than the total animation duration"
+        assert duration <= total_duration, "Animation of the object is longer than the total animation duration"
         
         # Check that animation overflows
         overflow = False
-        if duration + start_time > np.ceil(total_duration * frame_rate):
+        if np.ceil((duration + start_time)*frame_rate ) > np.ceil(total_duration * frame_rate):
             overflow = True            
         
         if not overflow:
-            start_frame = int(np.ceil(start_time))
-            end_frame = int(np.ceil(start_frame + duration - 1))
+            start_frame = int(np.ceil(start_time *  frame_rate))
+            end_frame = int(np.ceil((start_frame + duration * frame_rate)  - 1))
             
             padded_frame = 0
         else:
-            start_frame = int(np.ceil(start_time))
+            start_frame = int(np.ceil(start_time *  frame_rate))
             end_frame = int(np.ceil(total_duration * frame_rate)) - 1
             
             start_frame_0 = 0
-            end_frame_0 = int(np.ceil(duration - (end_frame - start_frame) - 1))
+            end_frame_0 = int(np.ceil( (duration * frame_rate) - (end_frame - start_frame) - 1))
             
             padded_frame = end_frame - start_frame + 1
-             
+        
         count = 0
+
         for i in range(start_frame, end_frame + 1):
             self.frames[i]["object"] = the_object.obj_name
             self.frames[i]["frame"] = count

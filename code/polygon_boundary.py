@@ -8,7 +8,8 @@ class PolygonBoundary():
                  duration, framerate,
                  colour = "#000000",
                  opacity = 0.5,
-                 center = (0,0), phi = 0):
+                 center = (0,0), phi = 0,
+                 theme = {}):
         self.obj_name = "polygon_boundary"
         
         self.pivots = pivots
@@ -46,7 +47,6 @@ class PolygonBoundary():
                               n_points_per_side[i] + 1)
 
             for point in tmp_points[:-1]:
-                # print(point)
                 self.inner_points.append(list(point))
         
         if debug:

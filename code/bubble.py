@@ -17,10 +17,47 @@ class Bubble():
                  start_colour = "#ff0000", end_colour = "#0000ff",
                  start_radius = 10, end_radius = 50,
                  movement_path = "cubic"):
+        """
+        Class to handle information about the drawn circle
+
+        Parameters
+        ----------
+        start : 1D list of 2 elements
+            (x,y) start location.
+        end : 1D list of 2 elements
+            (x,y) end location.
+        duration : float
+            number of seconds.
+        framerate : int, optional
+            frame rate of the animation. The default is 60.
+        peak_start : float, optional
+            fraction of time at which opacity is reached. The default is 0.2.
+        peak_end : float, optional
+            fraction of time at which opacity is reached. The default is 0.8.
+        opacity_min : float, optional
+            minimal opacity. The default is 0.
+        opacity_max : float, optional
+            maximum opacity. The default is 0.6.
+        start_colour : str, optional
+            hex code of the start colour. The default is "#ff0000".
+        end_colour : str, optional
+            hex code of the end colour. The default is "#0000ff".
+        start_radius : float, optional
+            radius at the start. The default is 10.
+        end_radius : float, optional
+            radius at the end. The default is 50.
+        movement_path : string, optional
+            interpolation method for the path. The default is "cubic".
+
+        Returns
+        -------
+        None.
+
+        """
         self.obj_name = "bubble"
         self.colours = linear_gradient(start_colour, 
                                        end_colour, 
-                                       duration * framerate,
+                                       int(np.ceil(duration * framerate)),
                                        )["hex"]
         
         self.start = start
@@ -62,7 +99,19 @@ class Bubble():
         pass
     
     def calc_positions(self):
-        t_temps = np.linspace(0, 1, self.duration)
+        """
+        Function that interpolates points 
+        between self.start and self.end points
+
+        Returns
+        -------
+        x_coordinates : float
+            x coordinate of the end point.
+        y_coordinates : float
+            y coordinate of the end point.
+
+        """
+        t_temps = np.linspace(0, 1, int(np.ceil(self.duration * self.framerate) ))
         if self.movement_path == "cubic":
             x_coordinates = ((1-t_temps)**3*self.start[0] +
                         3*(1-t_temps)**2*t_temps*self.points_between[0][0] +
@@ -76,20 +125,20 @@ class Bubble():
         return (x_coordinates,y_coordinates)
     
     def calc_radius(self, start_radius, end_radius):
-        t_temps = np.linspace(0, 1, self.duration)
+        t_temps = np.linspace(0, 1, int(np.ceil(self.duration * self.framerate)) )
         return list(start_radius + t_temps * (end_radius - start_radius)) 
     
     def calc_opacity(self):
         start_frame_0 = 0
-        start_frame_1 = int(np.ceil(self.duration * self.peak_start))
+        start_frame_1 = int(np.ceil(self.duration * self.peak_start * self.framerate))
         
-        end_frame_0 = int(np.ceil(self.duration * self.peak_end))
-        end_frame_1 = int(np.ceil(self.duration))
+        end_frame_0 = int(np.ceil(self.duration * self.peak_end * self.framerate))
+        end_frame_1 = int(np.ceil(self.duration * self.framerate))
         
         duration_fadein = start_frame_1 - start_frame_0 + 1
         duration_fadeout = end_frame_1 - end_frame_0 + 1
         
-        duration_inner = (int(self.duration) - 
+        duration_inner = (int(self.duration * self.framerate) - 
                         duration_fadein - duration_fadeout)
         
         opacity_fadein = list(np.linspace(self.opacity_min,self.opacity_max,duration_fadein))
