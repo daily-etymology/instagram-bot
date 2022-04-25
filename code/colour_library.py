@@ -19,8 +19,7 @@ def invert_colour(colour, is_hex = True):
         return RGB_to_hex(col)
     else:
         return col
-    
-    
+
 
 def random_palette(n_colours):
     palette = np.arange(0, 255, dtype=np.uint8).reshape(1, 255, 1)
@@ -108,3 +107,29 @@ def linear_gradient(start_hex, finish_hex="#FFFFFF", n=10):
     RGB_list.append(curr_vector)
 
   return color_dict(RGB_list)
+
+
+def gen_rainbow(n_points, hex_output = True):
+    # Pick first point
+    first_hue = np.random.uniform(0, 1)
+    saturation = np.random.uniform(0.7,1.0)
+    value = np.random.uniform(0.8,1.0)
+    
+    
+    hues_list = np.linspace(first_hue, first_hue + 1, n_points)
+    
+    colours = []
+    for hue in hues_list:
+        start_rgb = [int(np.ceil(255*i)) for i in colorsys.hsv_to_rgb(hue, 
+                                                                  saturation, 
+                                                                  value)]
+        colours.append(start_rgb)
+    
+    output = []
+    if hex_output:
+        for colour in colours:
+            output.append(RGB_to_hex(colour))
+    else:
+        output = colours
+    return output
+    

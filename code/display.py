@@ -46,7 +46,7 @@ class Display():
         palettes = hsv_palette_generator(4)
         
         objects = []
-        bg_colour = palettes[0]
+        bg_colour = [0, 0, 0]#palettes[0]
         b = Animated_object(duration = self.duration, 
                             start_time = 0, 
                             object_type = "background",
@@ -63,7 +63,7 @@ class Display():
         
         n_bubble = randint(MIN_BUBBLES, MAX_BUBBLES)
         
-        n_bubble = 25
+        #n_bubble = 25
         
         x0 = MIN_BUBBLES
         x1 = MAX_BUBBLES
@@ -78,7 +78,7 @@ class Display():
         min_duration = 5
         max_duration = 10
         
-        min_radius = 5  +     MAX_BUBBLES * (1 - n_bubble/MAX_BUBBLES)
+        min_radius = 5  +     (1 - n_bubble/MAX_BUBBLES)
         max_radius = 10 +     MAX_BUBBLES * (1 - n_bubble/MAX_BUBBLES)
         
         print("n_bubbles:{}".format(n_bubble))
@@ -121,7 +121,9 @@ class Display():
             objects.append(b)
         
         theme = {
-            "start_colour" : "#ffffff",  #RGB_to_hex(invert_colour(bg_colour, False))
+            "start_colour" :RGB_to_hex(
+                bg_colour
+                ), #"#ffffff",  #RGB_to_hex(invert_colour(bg_colour, False))
             
             "start_opacity" : 0.5,
             "n_sides" : 10,

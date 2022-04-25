@@ -8,8 +8,11 @@ class Polygon():
                  duration, framerate,
                  colour = "#aaaaaa",
                  opacity = 0.5,
-                 center = (0,0), phi = 0):
+                 center = (0,0), phi = 0,
+                 clockwise = True):
         self.obj_name = "polygon"
+        
+        self.clockwise = clockwise
         
         self.duration = duration
         self.framerate = framerate
@@ -27,6 +30,9 @@ class Polygon():
     
     def compute_pivot_points(self):
         theta = 2 * np.pi / self.n_sides
+        
+        if self.clockwise:
+            theta *= -1
         
         pivot_points = []
         

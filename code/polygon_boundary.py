@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import drawSvg as draw
+from colour_library import gen_rainbow
 
 class PolygonBoundary():
     def __init__(self, pivots,
@@ -81,26 +82,27 @@ class PolygonBoundary():
                             }
                         particles.append(tmp)
             if self.theme["style"] == "pivot_and_inner":
+                number_of_colours = int(np.ceil(self.n_repeats * len(self.inner_points)))
+                colours = gen_rainbow(number_of_colours)
                 for repeat_number in range(self.n_repeats):
                     for c, inner_point in enumerate(self.inner_points):
                         tmp = {
                             "object_type" : "bubble",
                             "start_position" : inner_point,
                             "end_position" : inner_point,
-                            "start_colour" : "#000000",
-                            "end_colour" : "#000000",
+                            "start_colour" : colours[repeat_number * len(self.inner_points) + c],
+                            "end_colour" : "#ffffff", #colours[repeat_number * len(self.inner_points) + c],
                             "start_radius" : 8,
-                            "end_radius" : 8,
+                            "end_radius" : 0,
                             "peak_start" : 0.0,
                             "peak_end" : 0.8,
-                            "opacity_min" : 0.0,
-                            "opacity_max" : 0.6,
+                            "opacity_min" : 1.0,
+                            "opacity_max" : 1.0,
                             
                             "duration" : 1,
-                            "start_time" : repeat_number * one_loop_duration +  c * one_loop_duration * 1 / len(self.inner_points)
+                            "start_time" : repeat_number * one_loop_duration +  c * one_loop_duration / (len(self.inner_points))
                             }
                         particles.append(tmp)
-
         return particles
                     
         

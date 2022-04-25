@@ -139,7 +139,7 @@ class Animated_object():
         
         # Check that animation overflows
         overflow = False
-        if np.ceil((duration + start_time)*frame_rate ) > np.ceil(total_duration * frame_rate):
+        if np.ceil((duration + start_time)*frame_rate ) >= np.ceil(total_duration * frame_rate):
             overflow = True            
         
         if not overflow:
@@ -155,7 +155,7 @@ class Animated_object():
             end_frame_0 = int(np.ceil( (duration * frame_rate) - (end_frame - start_frame) - 1))
             
             padded_frame = end_frame - start_frame + 1
-        
+                    
         count = 0
 
         for i in range(start_frame, end_frame + 1):
