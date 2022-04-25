@@ -146,7 +146,10 @@ class Display():
                         self.duration, self.frame_rate,
                         n_repeats = 2,
                         total_duration=self.duration,
-                        theme = {"style":"pivot_and_inner"}
+                        theme = {"style":"pivot_and_inner",
+                                 "end_colour" : RGB_to_hex(
+                                     bg_colour
+                                     )}
                         )
 
         for particle in boundary_0.particles:

@@ -91,7 +91,7 @@ class PolygonBoundary():
                             "start_position" : inner_point,
                             "end_position" : inner_point,
                             "start_colour" : colours[repeat_number * len(self.inner_points) + c],
-                            "end_colour" : "#ffffff", #colours[repeat_number * len(self.inner_points) + c],
+                            "end_colour" : self.theme["end_colour"], #colours[repeat_number * len(self.inner_points) + c],
                             "start_radius" : 8,
                             "end_radius" : 0,
                             "peak_start" : 0.0,
