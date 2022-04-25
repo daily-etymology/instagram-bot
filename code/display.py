@@ -126,7 +126,7 @@ class Display():
                 ), #"#ffffff",  #RGB_to_hex(invert_colour(bg_colour, False))
             
             "start_opacity" : 0.5,
-            "n_sides" : 10,
+            "n_sides" : np.random.randint(5,30),
             "radius" : 500,
             "phi" : 5 * np.pi / 2
             }
