@@ -55,8 +55,17 @@ if __name__ == "__main__":
                     # d.append(draw.Line(f["pivot_points"][i-1][0], f["pivot_points"][i-1][1], 
                     #                    f["pivot_points"][i][0], f["pivot_points"][i][1],
                     #             stroke='red', stroke_width=2))
+                    
+            if f["object"] == "rectangle":
+                d.append(draw.Rectangle(f["x"],
+                                        f["y"],
+                                        f["width"], 
+                                        f["height"],
+                                        fill = f["colour"],
+                                        opacity = f["opacity"]
+                                        ))
         
         d.savePng('frames/example{}.png'.format(c))
-        
+        #1/0
         print(f"\rframe:{c + 1} out of {len(display.frames)} \t {100*(c + 1)/len(display.frames):.3f}%", end="")
     print()  # New line

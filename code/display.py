@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 13 22:39:16 2022
-
-@author: j
-"""
-
 import numpy as np
 
 # https://geostat-framework.readthedocs.io/projects/gstools/en/stable/examples/04_vector_field/00_2d_vector_field.html
@@ -16,6 +10,7 @@ from colour_library import  RGB_to_hex, hsv_palette_generator, invert_colour
 
 from animated_object import Animated_object
 from polygon_boundary import PolygonBoundary
+from post_layout import PostLayout
 
 class Display():
     def __init__(self,
@@ -36,12 +31,21 @@ class Display():
         available_objects = ["background",
                              "bubble",
                              "polygon",
-                             "polygon_boundary"]
+                             "polygon_boundary",
+                             "rectangle",
+                             "textbox"
+                             ]
         
         # a smooth Gaussian covariance model
         model = gs.Gaussian(dim=2, var=1, len_scale=10)
         srf = gs.SRF(model, generator="VectorField")
         
+        n_sides = np.random.randint(5,10)
+        if n_sides == 9:
+            n_sides = 50
+            
+        
+        print(f"n_sides: {n_sides}")
         #palettes = random_palette(5)
         palettes = hsv_palette_generator(4)
         
@@ -126,23 +130,24 @@ class Display():
                 ), #"#ffffff",  #RGB_to_hex(invert_colour(bg_colour, False))
             
             "start_opacity" : 0.5,
-            "n_sides" : np.random.randint(5,30),
+            "n_sides" : n_sides,
             "radius" : 500,
             "phi" : 5 * np.pi / 2
             }
         
-        b = Animated_object(duration = self.duration, 
+        
+        polygon = Animated_object(duration = self.duration, 
                             start_time = 0, 
                             object_type = "polygon",
                             theme = theme)
         
-        objects.append(b)
+        objects.append(polygon)
         
         # Pivot points of the polygon 
         # used for the polygon boundary
-        b.the_object.pivot_points
+        polygon.the_object.pivot_points
         
-        boundary_0 = PolygonBoundary(b.the_object.pivot_points,
+        boundary_0 = PolygonBoundary(polygon.the_object.pivot_points,
                         self.duration, self.frame_rate,
                         n_repeats = 2,
                         total_duration=self.duration,
@@ -158,7 +163,20 @@ class Display():
                                 object_type = particle["object_type"],
                                 theme = particle)
             objects.append(b)
-            
+        
+        
+        
+        post_group = PostLayout(polygon.the_object)        
+        for obj in post_group.objects:
+            b = Animated_object(duration = obj["duration"], 
+                                start_time = obj["start_time"],
+                                object_type = obj["object_type"],
+                                theme = obj["theme"]
+                                )
+            objects.append(b)
+        #polygon.compute_inner_box
+        
+        # Add text boxes, with text
         
         return objects
     

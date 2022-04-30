@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Apr 13 22:36:35 2022
-
-@author: j
-"""
-
 import numpy as np
 from background import Background
 from random import random, randint
 from bubble import Bubble
 from polygon import Polygon
+from rectangle import Rectangle
 from colour_library import  RGB_to_hex
 
 class Animated_object():    
@@ -131,6 +126,16 @@ class Animated_object():
                 opacity,
                 phi = phi
                 )
+            
+        if object_type == "rectangle":
+            x,y = theme["position"]
+            width = theme["width"]
+            height = theme["height"]
+            
+            the_object = Rectangle(x, y, width, height,
+                             duration, frame_rate,
+                             text = "",
+                             theme = {})
         
         self.the_object = the_object
         
@@ -172,6 +177,13 @@ class Animated_object():
             if the_object.obj_name == "polygon":
                 self.frames[i]["opacity"] = the_object.opacity[count]
                 self.frames[i]["pivot_points"] = the_object.pivot_points
+                
+            if the_object.obj_name == "rectangle":
+                self.frames[i]["x"] = the_object.x
+                self.frames[i]["y"] = the_object.y
+                self.frames[i]["width"] = the_object.width
+                self.frames[i]["height"] = the_object.height                
+                self.frames[i]["opacity"] = the_object.opacity[count]
             
             count = count + 1
                 

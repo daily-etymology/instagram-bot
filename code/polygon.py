@@ -75,6 +75,9 @@ class Polygon():
             if coordinate_bottom:
                 box_coordinates.append(coordinate_bottom)
                 bottom_coordinates.append(coordinate_bottom)
+                
+        # print(top_coordinates)
+        # print(bottom_coordinates)
         
         x_top_list = []        
         for x in top_coordinates:
@@ -88,33 +91,40 @@ class Polygon():
         x_bottom_left = min(x_bottom_list)
         x_bottom_right = max(x_bottom_list)
         
-        x_top_left, x_top_right = min(top_coordinates[0][0],top_coordinates[1][0]), max(top_coordinates[0][0],top_coordinates[1][0])
-        x_bottom_left, x_bottom_right = min(bottom_coordinates[0][0],bottom_coordinates[1][0]), max(bottom_coordinates[0][0],bottom_coordinates[1][0])
+        # print(x_top_left, x_top_right, x_bottom_left, x_bottom_right)
+        
+        #x_top_left, x_top_right = min(top_coordinates[0][0],top_coordinates[1][0]), max(top_coordinates[0][0],top_coordinates[1][0])
+        #x_bottom_left, x_bottom_right = min(bottom_coordinates[0][0],bottom_coordinates[1][0]), max(bottom_coordinates[0][0],bottom_coordinates[1][0])
         # Compute inner points
         x_left, x_right = max(x_top_left, x_bottom_left), min(x_top_right, x_bottom_right)
+        
+        # print(x_left, x_right)
         
         x, y, width, height = x_left, y_bottom, abs(x_left - x_right), height
         return x, y, width, height
         
-    def lines_intersect(self, l1_start, l1_end, l2_start, l2_end):        
-        # Compute y = mx + c coeficients for two lines
-        m1 = (l1_start[1] - l1_end[1]) / (l1_start[0] - l1_end[0])
-        c1 = l1_start[1] - m1 * l1_start[0]
-        
+    def lines_intersect(self, l1_start, l1_end, l2_start, l2_end):  
         m2 = (l2_start[1] - l2_end[1]) / (l2_start[0] - l2_end[0])
         c2 = l2_start[1] - m2 * l2_start[0]
         
-        
+        # Compute y = mx + c coeficients for two lines
         if abs(l1_start[0] - l1_end[0]) < 10**-12:
             y_ = m2 * l1_start[0] + c2
-
+            
+            # print(l1_start, l1_end, l2_start, l2_end)
+            # print(y_, min(l1_start[1],l1_end[1]) <= y_ <= max(l1_start[1],l1_end[1]))
+            # print()
+            
             if min(l1_start[1],l1_end[1]) <= y_ <= max(l1_start[1],l1_end[1]):
                 return l1_start[0], y_
             return False
                 
+        m1 = (l1_start[1] - l1_end[1]) / (l1_start[0] - l1_end[0])
+        c1 = l1_start[1] - m1 * l1_start[0]
+        
         if m1 == m2:
-            return False
-                
+            return False     
+                        
         # Check if two lines intersect
         x_ = (c2 - c1) / (m1 - m2)
         y_ = m2 * (c2 - c1) / (m1 - m2) + c2
@@ -123,18 +133,19 @@ class Polygon():
         
         y1 = m1 * x_ + c1 
         y2 = m2 * x_ + c2
-                        
+                                
         if abs(y1 - y2) > 10 ** -12:
             return False
-
-        if min(x_box) <= x_ <= max(x_box):
+        
+                
+        if min(x_box) - 10**-9 <= x_ <= max(x_box) + 10**-9:
             return [x_, y_]
         
         return False
         
 
 if __name__ == "__main__":
-    n_sides = 10
+    n_sides = 18
     # 4 : pi/2
     # 5 : 3 * pi / 2
     p = Polygon(n_sides,500, 1, 60, phi =  5*np.pi/(2) )
@@ -162,8 +173,10 @@ if __name__ == "__main__":
                            p.pivot_points[i][0], p.pivot_points[i][1],
                     stroke='red', stroke_width=2))
         
-    box_points = p.compute_inner_box(-300,200)
+    box_points = p.compute_inner_box(-400, 150)
     d.append(draw.Rectangle(box_points[0],box_points[1], box_points[2], box_points[3]))
+    
+    print(box_points)
     
     # box_points = p.compute_inner_box(300,10)
     # d.append(draw.Rectangle(box_points[0],box_points[1], box_points[2], box_points[3]))
@@ -175,7 +188,7 @@ if __name__ == "__main__":
     #print(p.lines_intersect([5,7],[10,1], [1,10], [15,11]))
     print()
     
-    print(p.lines_intersect(p.pivot_points[1], p.pivot_points[2], [0,-400], [1000,-400]))
+    # print(p.lines_intersect(p.pivot_points[1], p.pivot_points[2], [0,-400], [1000,-400]))
     
     d.savePng('example.png')
     
