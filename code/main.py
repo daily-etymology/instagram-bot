@@ -9,6 +9,10 @@ from pathlib import Path
 from display import Display
 import drawSvg as draw
 
+from PIL import Image
+from PIL import ImageFont
+from PIL import ImageDraw 
+
 
 if __name__ == "__main__":
     # Create output folder
@@ -23,6 +27,8 @@ if __name__ == "__main__":
     print("exporting frames")
     for c,frame in enumerate(display.frames):
         d = draw.Drawing(SCREEN_WIDTH, SCREEN_HEIGHT, origin='center', displayInline=False)
+        
+        text_box_objects = []
         
         for f in frame:
             if f == {}:
@@ -64,8 +70,39 @@ if __name__ == "__main__":
                                         fill = f["colour"],
                                         opacity = f["opacity"]
                                         ))
+                
+            if f["object"] == "text_box":
+                text_box_objects.append(f)
+                pass
         
-        d.savePng('frames/example{}.png'.format(c))
-        #1/0
+        output_pic_name = 'frames/example{}.png'.format(c)
+        d.savePng(output_pic_name)
+        
+        
+        if len(text_box_objects) > 0:
+            image = Image.open(output_pic_name).convert("RGBA")
+            txt = Image.new('RGBA', image.size, (255,255,255,0))
+            
+            pil_draw = ImageDraw.Draw(txt)
+            
+            for text_object in text_box_objects:
+                
+                
+                # print(text_object["text_string"], text_object["text_rgba"])
+                font = ImageFont.truetype(text_object["font_name"],
+                                          text_object["font_size"])
+                pil_draw.text(text_object["text_position"],
+                          text_object["text_string"],
+                          fill = tuple(text_object["text_rgba"]),
+                          font = font
+                           )
+                
+                image = Image.alpha_composite(image, txt)
+                
+            image.save(output_pic_name)
+            image.close()
+        
+        # 1/0
+        
         print(f"\rframe:{c + 1} out of {len(display.frames)} \t {100*(c + 1)/len(display.frames):.3f}%", end="")
     print()  # New line

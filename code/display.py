@@ -12,10 +12,61 @@ from animated_object import Animated_object
 from polygon_boundary import PolygonBoundary
 from post_layout import PostLayout
 
+    
 class Display():
     def __init__(self,
                  duration = 10,
                  frame_rate = 60):
+        
+        self.theme = {
+            "background" : {
+                # If None, then default to the first colour in palette
+                # [R, G, B]
+                "colour" : [0, 0, 0],
+                },
+            "bubble" : {
+                "n_max" : 50,
+                "n_min" : 2,
+                "duration_min" : 2,
+                "duration_max" : 10,
+                "radius_range" : [10, 300],
+                "start_position_range" : [-500, 500],
+                "peak_start" : 0.2,
+                "peak_end" : 0.8,
+                "opacity_min" : 0,
+                "opacity_max" : 0.6
+                },
+            "polygon" : {
+                "n_sides_max" : 9,
+                "n_sides_min" : 4,
+                "start_opacity" : 0.5,
+                "radius" : 500,
+                "phi" : 5 * np.pi / 2,
+                "start_colour" : None
+                },
+            "polygon_boundary" : {
+                "style":"pivot_and_inner"
+                },
+            "textbox" : {
+                "box_colour" : "#ff00ff",
+                "box_opacity" : 0.0,
+                "text_colour" : None,
+                "peak_start" : 0.2,
+                "peak_end" : 0.8,
+                "opacity_min" : 0,
+                "opacity_max" : 0.6
+                },
+            "field" : {
+                # a smooth Gaussian covariance model
+                "surface" : gs.SRF(gs.Gaussian(dim=2, var=1, len_scale=10),
+                                   generator="VectorField"),
+                "vector" : None,
+                "vector_range" : [-5, 5]
+                },
+            "colours" : {
+                "n_colours_in_palette" : 5
+                }
+            }
         
         self.frame_rate = frame_rate
         self.duration = duration
@@ -35,22 +86,25 @@ class Display():
                              "rectangle",
                              "textbox"
                              ]
-        
-        # a smooth Gaussian covariance model
-        model = gs.Gaussian(dim=2, var=1, len_scale=10)
-        srf = gs.SRF(model, generator="VectorField")
-        
-        n_sides = np.random.randint(5,10)
+                        
+        n_sides = np.random.randint(self.theme["polygon"]["n_sides_min"],
+                                    self.theme["polygon"]["n_sides_max"])
         if n_sides == 9:
             n_sides = 50
             
+        self.theme["polygon"]["n_sides"] = n_sides
         
         print(f"n_sides: {n_sides}")
         #palettes = random_palette(5)
-        palettes = hsv_palette_generator(4)
+        palettes = hsv_palette_generator(self.theme["colours"]["n_colours_in_palette"])
+        self.theme["colours"]["palettes"] = palettes
         
         objects = []
-        bg_colour = [0, 0, 0]#palettes[0]
+        if self.theme["background"]["colour"] is None:
+            bg_colour = palettes[0]
+        else:
+            assert type(self.theme["background"]["colour"]) == list, "bg colour should be in [R, G, B] form"
+            bg_colour = self.theme["background"]["colour"]
         b = Animated_object(duration = self.duration, 
                             start_time = 0, 
                             object_type = "background",
@@ -62,10 +116,12 @@ class Display():
         palettes = palettes[1:]
         
         
-        MIN_BUBBLES = 2
-        MAX_BUBBLES = 100
+        MIN_BUBBLES = self.theme["bubble"]["n_min"]
+        MAX_BUBBLES = self.theme["bubble"]["n_max"]
         
         n_bubble = randint(MIN_BUBBLES, MAX_BUBBLES)
+        
+        self.theme["bubble"]["n"] = n_bubble
         
         #n_bubble = 25
         
@@ -76,14 +132,24 @@ class Display():
                 
         bubble_scalor = self.compute_bubble_speed(n_bubble, x0, x1, y0, y1)
         
-        x_vector_scalor = bubble_scalor * np.random.uniform(-2,2)
-        y_vector_scalor = bubble_scalor * np.random.uniform(-2,2)
+        if self.theme["field"]["vector"] is None:
+            vec_range = self.theme["field"]["vector_range"]
+            x_vector_scalor = bubble_scalor * np.random.uniform(min(vec_range),
+                                                                max(vec_range))
+            y_vector_scalor = bubble_scalor * np.random.uniform(min(vec_range),
+                                                                max(vec_range))
+        else:
+            x_vector_scalor, y_vector_scalor = self.theme["field"]["vector"]
         
-        min_duration = 5
-        max_duration = 10
+        min_duration = self.theme["bubble"]["duration_min"]
+        max_duration = self.theme["bubble"]["duration_max"]
         
-        min_radius = 5  +     (1 - n_bubble/MAX_BUBBLES)
-        max_radius = 10 +     MAX_BUBBLES * (1 - n_bubble/MAX_BUBBLES)
+        if self.theme["bubble"]["radius_range"] is None:
+            min_radius = 5  +     (1 - n_bubble/MAX_BUBBLES)
+            max_radius = 10 +     MAX_BUBBLES * (1 - n_bubble/MAX_BUBBLES)
+        else:
+            min_radius = min(self.theme["bubble"]["radius_range"])
+            max_radius = max(self.theme["bubble"]["radius_range"])
         
         print("n_bubbles:{}".format(n_bubble))
         print("x_vector_scalor:{:.2f}\ty_vector_scalor:{:.2f}".format(x_vector_scalor,y_vector_scalor))
@@ -94,17 +160,26 @@ class Display():
             col_ids = np.random.choice(np.arange(len(palettes)),2)
             
             # Bubble theme
-            theme = {
-                "start_colour" : RGB_to_hex(palettes[col_ids[0]]),
-                "end_colour" : RGB_to_hex(palettes[col_ids[1]]),
-                "start_radius" : np.random.uniform(min_radius,max_radius),
-                "end_radius" : np.random.uniform(min_radius,max_radius)
-                }
+            # theme = {
+            #     "start_colour" : RGB_to_hex(palettes[col_ids[0]]),
+            #     "end_colour" : RGB_to_hex(palettes[col_ids[1]]),
+            #     "start_radius" : np.random.uniform(min_radius,max_radius),
+            #     "end_radius" : np.random.uniform(min_radius,max_radius)
+            #     }
             
-            theme["start_position"] = (randint(-500,500),
-                                      randint(-500,500))
+            theme = self.theme["bubble"]
+            theme["start_colour"] = RGB_to_hex(palettes[col_ids[0]])
+            theme["end_colour"] = RGB_to_hex(palettes[col_ids[1]])
+            theme["start_radius"] = np.random.uniform(min_radius,max_radius)
+            theme["end_radius"] = np.random.uniform(min_radius,max_radius)
             
-            direction_vector = srf((
+            min_start_pos = min(self.theme["bubble"]["start_position_range"])
+            max_start_pos = max(self.theme["bubble"]["start_position_range"])
+            
+            theme["start_position"] = (randint(min_start_pos, max_start_pos),
+                                      randint(min_start_pos, max_start_pos))
+            
+            direction_vector = self.theme["field"]["surface"]((
                 theme["start_position"][0],
                 theme["start_position"][1]
                 ))
@@ -123,17 +198,14 @@ class Display():
                                 object_type = "bubble",
                                 theme = theme)
             objects.append(b)
-        
-        theme = {
-            "start_colour" :RGB_to_hex(
-                bg_colour
-                ), #"#ffffff",  #RGB_to_hex(invert_colour(bg_colour, False))
             
-            "start_opacity" : 0.5,
-            "n_sides" : n_sides,
-            "radius" : 500,
-            "phi" : 5 * np.pi / 2
-            }
+            self.theme["bubble"] = theme
+        
+        
+        theme = self.theme["polygon"]
+        if self.theme["polygon"]["start_colour"] is None:
+            theme["start_colour"] = RGB_to_hex(bg_colour)
+        theme["n_sides"] = n_sides
         
         
         polygon = Animated_object(duration = self.duration, 
@@ -141,21 +213,24 @@ class Display():
                             object_type = "polygon",
                             theme = theme)
         
+        self.theme["polygon"] = theme
+        
         objects.append(polygon)
         
         # Pivot points of the polygon 
         # used for the polygon boundary
         polygon.the_object.pivot_points
         
+        theme = self.theme["polygon_boundary"]
+        theme["end_colour"] = RGB_to_hex(bg_colour)
         boundary_0 = PolygonBoundary(polygon.the_object.pivot_points,
                         self.duration, self.frame_rate,
                         n_repeats = 2,
                         total_duration=self.duration,
-                        theme = {"style":"pivot_and_inner",
-                                 "end_colour" : RGB_to_hex(
-                                     bg_colour
-                                     )}
+                        theme = theme
                         )
+        
+        self.theme["polygon_boundary"] = theme
 
         for particle in boundary_0.particles:
             b = Animated_object(duration = particle["duration"], 
@@ -163,10 +238,8 @@ class Display():
                                 object_type = particle["object_type"],
                                 theme = particle)
             objects.append(b)
-        
-        
-        
-        post_group = PostLayout(polygon.the_object)        
+                
+        post_group = PostLayout(polygon.the_object, self.theme)        
         for obj in post_group.objects:
             b = Animated_object(duration = obj["duration"], 
                                 start_time = obj["start_time"],

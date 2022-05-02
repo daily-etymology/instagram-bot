@@ -6,6 +6,7 @@ from random import random, randint
 from bubble import Bubble
 from polygon import Polygon
 from rectangle import Rectangle
+from text_box import TextBox
 from colour_library import  RGB_to_hex
 
 class Animated_object():    
@@ -135,7 +136,18 @@ class Animated_object():
             the_object = Rectangle(x, y, width, height,
                              duration, frame_rate,
                              text = "",
-                             theme = {})
+                             theme = theme)
+        
+        if object_type == "text_box":
+            the_object = TextBox(duration = duration,
+                                 framerate = frame_rate,
+                    x = theme["x"], y = theme["y"], 
+                    width = theme["width"], height = theme["height"],
+                    text = theme["text_string"], 
+                    font_name = theme["font_name"],
+                    text_align = theme["text_align"], max_lines = theme["max_lines"],
+                    theme = theme)
+            
         
         self.the_object = the_object
         
@@ -184,6 +196,14 @@ class Animated_object():
                 self.frames[i]["width"] = the_object.width
                 self.frames[i]["height"] = the_object.height                
                 self.frames[i]["opacity"] = the_object.opacity[count]
+                
+            if the_object.obj_name == "text_box":
+                self.frames[i]["text_position"] = the_object.text_position
+                self.frames[i]["text_opacity"] = the_object.opacity[count]
+                self.frames[i]["font_name"] = the_object.font_name
+                self.frames[i]["font_size"] = the_object.font_size
+                self.frames[i]["text_string"] = the_object.text_string
+                self.frames[i]["text_rgba"] = the_object.text_rgba[count]
             
             count = count + 1
                 
@@ -202,5 +222,21 @@ class Animated_object():
                 if the_object.obj_name == "polygon":
                     self.frames[i]["opacity"] = the_object.opacity[count]
                     self.frames[i]["pivot_points"] = the_object.pivot_points
+                    
+                if the_object.obj_name == "rectangle":
+                    self.frames[i]["x"] = the_object.x
+                    self.frames[i]["y"] = the_object.y
+                    self.frames[i]["width"] = the_object.width
+                    self.frames[i]["height"] = the_object.height                
+                    self.frames[i]["opacity"] = the_object.opacity[count]
+                    
+                if the_object.obj_name == "text_box":
+                    self.frames[i]["text_position"] = the_object.text_position
+                    self.frames[i]["text_opacity"] = the_object.opacity[count]
+                    self.frames[i]["font_name"] = the_object.font_name
+                    self.frames[i]["font_size"] = the_object.font_size
+                    self.frames[i]["text_string"] = the_object.text_string
+                    self.frames[i]["text_rgba"] = the_object.text_rgba[count]
+                    
                     
                 count = count + 1

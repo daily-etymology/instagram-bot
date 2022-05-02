@@ -22,10 +22,10 @@ class Rectangle():
         
         self.text = text
         
-        if not "opacity" in theme.keys():
+        if not "box_opacity" in theme.keys():
             self.opacity = 0.6
         else:
-            self.opacity = theme["opacity"]
+            self.opacity = theme["box_opacity"]
             
         if not "box_colour" in theme.keys():
             self.box_colour = "#ffaa66"
