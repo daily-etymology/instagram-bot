@@ -5,10 +5,12 @@ Class to load and process the etymology data
 """
 import pandas as pd
 import numpy as np
+import os
 
 class EtymologyHelper():
     def __init__(self):
-        df = pd.read_parquet("../data/words.parquet")
+        filepath = os.path.abspath(__file__).replace("code/misc/etymology_helper.py", "")
+        df = pd.read_parquet(filepath + "data/words.parquet")
         new_df = df[df["usage"].isna() == False]
 
         self.row_id = np.random.randint(0,new_df.shape[0] - 1)

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import numpy as np
-from background import Background
+from visuals.elements.background import Background
 from random import random, randint
-from bubble import Bubble
-from polygon import Polygon
-from rectangle import Rectangle
-from text_box import TextBox
-from colour_library import  RGB_to_hex
+from visuals.elements.bubble import Bubble
+from visuals.elements.polygon import Polygon
+from visuals.elements.rectangle import Rectangle
+from visuals.elements.text_box import TextBox
+from visuals.helpers.colour_library import  RGB_to_hex
 
 class Animated_object():    
     def __init__(self,

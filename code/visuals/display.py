@@ -6,11 +6,11 @@ import numpy as np
 import gstools as gs  # Random field package
 
 from random import randint
-from colour_library import  RGB_to_hex, hsv_palette_generator, invert_colour
+from visuals.helpers.colour_library import  RGB_to_hex, hsv_palette_generator, invert_colour
 
-from animated_object import Animated_object
-from polygon_boundary import PolygonBoundary
-from post_layout import PostLayout
+from visuals.animated_object import Animated_object
+from visuals.elements.polygon_boundary import PolygonBoundary
+from visuals.post_layout import PostLayout
 
     
 class Display():
@@ -22,7 +22,7 @@ class Display():
             "background" : {
                 # If None, then default to the first colour in palette
                 # [R, G, B]
-                "colour" : [0, 0, 0],
+                "colour" : np.random.sample([0, 0, 0], [255, 255, 255]),
                 },
             "bubble" : {
                 "n_max" : 50,
@@ -38,7 +38,7 @@ class Display():
                 },
             "polygon" : {
                 "n_sides_max" : 9,
-                "n_sides_min" : 4,
+                "n_sides_min" : 5,
                 "start_opacity" : 0.5,
                 "radius" : 500,
                 "phi" : 5 * np.pi / 2,

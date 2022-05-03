@@ -10,9 +10,9 @@ from PIL import ImageDraw
 import string
 import numpy as np
 
-from colour_library import hex_to_RGB
+from visuals.helpers.colour_library import hex_to_RGB
 
-from text_wrapper import solveWordWrap, solution_to_rownumber, printSolution
+from visuals.helpers.text_wrapper import solveWordWrap, solution_to_rownumber, printSolution
 
 class TextBox():
     def __init__(self, 

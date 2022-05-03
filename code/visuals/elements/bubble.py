@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Wed Apr 13 22:35:23 2022
 
-@author: j
 """
 
 import numpy as np
-from colour_library import linear_gradient, RGB_to_hex, random_palette, hsv_palette_generator
+from visuals.helpers.colour_library import linear_gradient, RGB_to_hex, random_palette, hsv_palette_generator
 from random import random
 
 class Bubble():

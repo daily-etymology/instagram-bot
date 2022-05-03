@@ -4,8 +4,9 @@
 Class to keep track of all objects used in the post. This includes locations
 of the text boxes and other things
 """
-from etymology_helper import EtymologyHelper
-from text_box import TextBox
+from misc.etymology_helper import EtymologyHelper
+from visuals.elements.text_box import TextBox
+import os
 
 class PostLayout():
     def __init__(self, bg_object = None, theme = {}):
@@ -22,6 +23,8 @@ class PostLayout():
         self.objects = []
                 
         self.etymology = EtymologyHelper()
+        
+        self.root_path = os.path.abspath(__file__).replace("code/visuals/post_layout.py", "")
         
         self.gen_first_screen()
         self.gen_second_screen()
@@ -51,7 +54,7 @@ class PostLayout():
                                 width = rect_settings[2],
                                 height = rect_settings[3],
                                 text = self.etymology.new_row["phonetics"],
-                                font_name = '../fonts/CharisSILI.ttf',                               
+                                font_name = self.root_path + 'fonts/CharisSILI.ttf',
                                 text_align = "center",
                                 max_lines = 1)
             
@@ -101,7 +104,7 @@ class PostLayout():
                                 width = rect_settings[2],
                                 height = rect_settings[3],
                                 text = self.etymology.new_row["word"],
-                                font_name = '../fonts/CharisSILI.ttf',                               
+                                font_name = self.root_path + 'fonts/CharisSILI.ttf',
                                 text_align = "center",
                                 max_lines = 1)
             
@@ -150,7 +153,7 @@ class PostLayout():
                                 width = rect_settings[2],
                                 height = rect_settings[3],
                                 text = self.etymology.new_row["word_type"],
-                                font_name = '../fonts/CharisSILI.ttf',
+                                font_name = self.root_path + 'fonts/CharisSILI.ttf',
                                 text_align = "center",
                                 max_lines = 1)
             
@@ -200,7 +203,7 @@ class PostLayout():
                                 width = rect_settings[2],
                                 height = rect_settings[3],
                                 text = self.etymology.new_row["usage"],
-                                font_name = '../fonts/CharisSILI.ttf',
+                                font_name = self.root_path + 'fonts/CharisSILI.ttf',
                                 text_align = "center",
                                 max_lines = 1)
             
@@ -248,7 +251,7 @@ class PostLayout():
                             width = rect_settings[2],
                             height = rect_settings[3],
                             text = self.etymology.new_row["etym"],
-                            font_name = '../fonts/CharisSILI.ttf',
+                            font_name = self.root_path + 'fonts/CharisSILI.ttf',
                             text_align = "top",
                             max_lines = None)
         

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 import drawSvg as draw
-from colour_library import gen_rainbow
+from visuals.helpers.colour_library import gen_rainbow
 
 class PolygonBoundary():
     def __init__(self, pivots,
