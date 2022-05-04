@@ -185,7 +185,7 @@ class PostLayout():
             }
         if not self.compute_inner_box is None:
             theme = dict(self.theme["textbox"])
-            rect_settings = self.compute_inner_box(250, 100)
+            rect_settings = self.compute_inner_box(0, 200)
             obj_dict["object_type"] = "rectangle"
             theme["position"] = rect_settings[:2]
             theme["width"] = rect_settings[2]

@@ -7,7 +7,6 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw 
 
-import string
 import numpy as np
 
 from visuals.helpers.colour_library import hex_to_RGB
@@ -143,19 +142,26 @@ class TextBox():
             solutions = []
                    
             print("computing text sizes", self.text_string)
-            for font_size in range(20, 150):
+            for font_size in range(1, 80):
                 solution = self.greedy_solver_multiline(text_list, font_size)
-
+                
                 if solution["valid"]:
                     solutions.append(solution)
-
+                
+                # if solution["new_shape"][1] > self.height:
+                #     break
+                
             
         best_score = 2 ** 31 - 1
         best_id = 2 ** 31 - 1
+        max_font = -1
         for c, s in enumerate(solutions):
-            if s["score"] < best_score:
-                best_score = s["score"]
+            if s["font_size"] > max_font:
+                max_font = s["font_size"]
                 best_id = c
+            # if s["score"] < best_score:
+            #     best_score = s["score"]
+            #     best_id = c
         # print(solutions)
         best_solution = solutions[best_id]
 
@@ -223,32 +229,7 @@ class TextBox():
         solution["valid"] = valid_sol
         
         return solution
-        
-        
-        # print(combine_text, text_list[0])
-        
-        # print(new_shape, (self.width, self.height))
-        # new_shape = self.compute_size(combine_text, tmp_font)
-        # print(new_shape)
-        
-        
-        # print(font_size, text_list)
-        # new_shape = self.compute_size(combine_text, tmp_font)
-        # #new_shape = tmp_font.getsize(combine_text)                
-        # #new_shape = self.get_text_dimensions(combine_text, tmp_font)
-        
-        # if new_shape[0] > self.width or new_shape[1] > self.height:
-        #     font_size -= 1
-        #     tmp_font = ImageFont.truetype(self.font_name, font_size)
-        #     new_shape = self.get_text_dimensions(combine_text, tmp_font)
-        #     self.text_shape = new_shape
-        #     self.font = tmp_font
             
-        #     return font_size
-        
-        # font_size += 1
-    
-    
     def tex_solver(self, text_list, text_string, font_size):
         combine_text = ""
         solution = {}
