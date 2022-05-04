@@ -11,7 +11,6 @@ import string
 import numpy as np
 
 from visuals.helpers.colour_library import hex_to_RGB
-
 from visuals.helpers.text_wrapper import solveWordWrap, solution_to_rownumber, printSolution
 
 class TextBox():
@@ -39,6 +38,7 @@ class TextBox():
         self.font = None
         
         self.theme = dict(theme)
+        
         
         if self.theme == {}:
             self.font_size = self.greedy_solver()
@@ -132,7 +132,7 @@ class TextBox():
                 if new_shape[0] > self.width or new_shape[1] > self.height:
                     font_size -= 1
                     tmp_font = ImageFont.truetype(self.font_name, font_size)
-                    new_shape = self.get_text_dimensions(combine_text, tmp_font)
+                    new_shape = self.compute_size(combine_text, tmp_font) #self.get_text_dimensions(combine_text, tmp_font)
                     self.text_shape = new_shape
                     self.font = tmp_font
                     
@@ -141,14 +141,14 @@ class TextBox():
                 font_size += 1
         else:            
             solutions = []
-                        
-            for font_size in range(20, 80):
-                solution = self.tex_solver(text_list, text_string, font_size)
-                if solution:
+                   
+            print("computing text sizes", self.text_string)
+            for font_size in range(20, 150):
+                solution = self.greedy_solver_multiline(text_list, font_size)
+
+                if solution["valid"]:
                     solutions.append(solution)
-                    # font_size +=  1
-                # else:
-                #     break
+
             
         best_score = 2 ** 31 - 1
         best_id = 2 ** 31 - 1
@@ -158,18 +158,96 @@ class TextBox():
                 best_id = c
         # print(solutions)
         best_solution = solutions[best_id]
+
+        # print(best_score, best_solution)
         
-        
-        # print(best_solution)
-        
-        self.font_size = best_solution["font_size"]
-        tmp_font = ImageFont.truetype(self.font_name, self.font_size)
+        font_size = best_solution["font_size"]
+        tmp_font = ImageFont.truetype(self.font_name, font_size)
         self.font = tmp_font
         self.text_string = best_solution["full_string"]
         new_shape = self.get_text_dimensions(self.text_string, tmp_font)        
         self.new_shape = best_solution["new_shape"]
         
         return font_size
+    
+    def greedy_solver_multiline(self, text_list, font_size):
+        tmp_font = ImageFont.truetype(self.font_name, font_size)
+                
+        lines = []
+        line_sizes = []
+        line = ""
+        for c, word in enumerate(text_list):
+            # print(word, "-", line)
+            new_shape = self.compute_size(line, tmp_font)
+            next_shape = [0, 0]
+            if c < len(text_list) - 1:
+                next_shape = self.compute_size((line + text_list[c + 1]).strip(), tmp_font)
+            if next_shape[0] > self.width:
+                lines.append(line.strip())
+                line_sizes.append(new_shape)
+                line = word + " "
+            else:
+                line += word + " "                
+        lines.append(line.strip())
+        line_sizes.append(new_shape)
+        
+        combined_str = ""
+        
+        for line in lines:
+            combined_str += line + "\n"
+        combined_str = combined_str.strip()
+        
+        # Compute score
+        height = 0
+        widths = []
+        for dim in line_sizes:
+            height += dim[1]
+            widths.append(dim[0])
+            
+        score = (height - self.height) ** 2
+        for width in widths:
+            score += (width - self.width) ** 2
+            
+        final_shape = self.compute_size(combined_str, tmp_font)
+        # print(line_sizes, height, widths, score, final_shape)
+        
+        valid_sol = True
+        if final_shape[0] > self.width or final_shape[1] > self.height:
+            valid_sol = False
+        
+        solution = {}        
+        solution["font_size"] = font_size
+        solution["score"] = score
+        solution["new_shape"] = new_shape
+        solution["full_string"] = combined_str
+        solution["valid"] = valid_sol
+        
+        return solution
+        
+        
+        # print(combine_text, text_list[0])
+        
+        # print(new_shape, (self.width, self.height))
+        # new_shape = self.compute_size(combine_text, tmp_font)
+        # print(new_shape)
+        
+        
+        # print(font_size, text_list)
+        # new_shape = self.compute_size(combine_text, tmp_font)
+        # #new_shape = tmp_font.getsize(combine_text)                
+        # #new_shape = self.get_text_dimensions(combine_text, tmp_font)
+        
+        # if new_shape[0] > self.width or new_shape[1] > self.height:
+        #     font_size -= 1
+        #     tmp_font = ImageFont.truetype(self.font_name, font_size)
+        #     new_shape = self.get_text_dimensions(combine_text, tmp_font)
+        #     self.text_shape = new_shape
+        #     self.font = tmp_font
+            
+        #     return font_size
+        
+        # font_size += 1
+    
     
     def tex_solver(self, text_list, text_string, font_size):
         combine_text = ""
@@ -271,8 +349,11 @@ class TextBox():
         text_height = font.getmask(text_string).getbbox()[3] + descent
     
         return [text_width, text_height]
-    
-    def compute_text_position(self):       
+
+    def compute_text_position(self):
+        tmp_font = ImageFont.truetype(self.font_name, self.font_size)
+        self.text_shape = self.compute_size(self.text_string, tmp_font)
+        
         if self.text_align == "top":
             x = self.x - self.width
             y = self.y - self.height
@@ -287,11 +368,15 @@ class TextBox():
 if __name__ == "__main__":
     import numpy as np
     import drawSvg as draw
+    
+    import os
 
     from polygon import Polygon
     
+    root_path = os.path.abspath(__file__).replace("code/visuals/elements/text_box.py", "")
+    
     #dummy_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque elementum sem nec tortor varius, vel molestie tortor consectetur. Morbi eleifend est a nisi molestie maximus. Aliquam condimentum vulputate arcu eget dapibus. Quisque interdum purus eget lacus vestibulum pellentesque. Quisque ultricies eget nunc eget hendrerit. Vestibulum lobortis, orci ac ultricies pharetra, augue odio viverra enim, sed finibus elit nunc eget neque. Fusce at leo pellentesque, dapibus neque pharetra, consequat orci. Sed et nisi arcu. Cras sit amet pharetra ipsum. Aliquam fringilla lectus mattis mi efficitur, eget blandit augue pharetra. Quisque mollis egestas orci quis facilisis. Morbi ullamcorper enim ac elit pharetra bibendum. Donec malesuada mollis leo, ut aliquam dui iaculis mollis. Mauris placerat enim tellus, ut suscipit erat laoreet vitae. In hac habitasse platea dictumst. Etiam nec libero nibh."
-    dummy_text = "Test this reasonably long string. Twinkle twinkle little star, how I wonder what you are. Shinning long string. Twinkle twinkle up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, long string. Twinkle twinkle how I wonder what you are. Shinning long string. Twinkle twinkle up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, long string. Twinkle twinkle how I wonder what you are."
+    #dummy_text = "Test this reasonably long string. Twinkle twinkle little star, how I wonder what you are. Shinning long string. Twinkle twinkle up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, long string. Twinkle twinkle how I wonder what you are. Shinning long string. Twinkle twinkle up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, long string. Twinkle twinkle how I wonder what you are."
     #dummy_text = "This is some random text that has no meaning. I just want to fill in the space with random nonsense which looks somewhat legit."
     #dummy_text = "Hello, how are you?"
     
@@ -300,7 +385,7 @@ if __name__ == "__main__":
     
     d = draw.Drawing(SCREEN_WIDTH, SCREEN_HEIGHT, origin='center', displayInline=False)
     
-    n_sides = 8
+    n_sides = 5
 
     p = Polygon(n_sides,500, 1, 60, phi =  5*np.pi/(2) )
                    
@@ -355,6 +440,7 @@ if __name__ == "__main__":
     
     draw = ImageDraw.Draw(image)
     
+    print(box_points_bottom[0], box_points_bottom[1], box_points_bottom[2], box_points_bottom[3])
     
     text_box = TextBox(duration = 5,
                        framerate = 60,
@@ -362,14 +448,14 @@ if __name__ == "__main__":
                         y = box_points_bottom[1],
                         width = box_points_bottom[2],
                         height = box_points_bottom[3],
-                        text = "This is some random text that has no meaning. I just want to fill in the space with random nonsense which looks somewhat legit.",
+                        text = "By the 19th century we already had arrogant, haughty, and supercilious, but there was apparently need for more because by mid-century the language had garnered two others: toplofty and its variant toploftical. The source of these is likely the phrase top loft, which refers to the highest story of a building.",
                         #font_name = 'fonts/Spring in May.ttf',
                         #font_name = 'fonts/The Californication.ttf',
                         #font_name = 'fonts/Afterglow-Regular.ttf',
                         #font_name = 'fonts/Hello Valentina.ttf',
                         #font_name = 'fonts/Birds of Paradise.ttf',
                         #font_name = 'fonts/Baby Doll.ttf',
-                        font_name = '../fonts/Louis George Cafe/Louis George Cafe.ttf',
+                        font_name = root_path + 'fonts/CharisSILI.ttf',
                        
                         max_lines = None)  
     
@@ -390,7 +476,7 @@ if __name__ == "__main__":
                        #font_name = 'fonts/Hello Valentina.ttf',
                        #font_name = 'fonts/Birds of Paradise.ttf',
                        #font_name = 'fonts/Baby Doll.ttf',
-                       font_name = '../fonts/Louis George Cafe/Louis George Cafe Bold.ttf',
+                       font_name = root_path + 'fonts/Louis George Cafe/Louis George Cafe Bold.ttf',
                        
                        max_lines = None)  
     

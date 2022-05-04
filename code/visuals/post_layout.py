@@ -41,7 +41,7 @@ class PostLayout():
             theme["position"] = rect_settings[:2]
             theme["width"] = rect_settings[2]
             theme["height"] = rect_settings[3]
-            obj_dict["theme"] = theme
+            obj_dict["theme"] = dict(theme)
             
             
             self.objects.append(obj_dict)
@@ -75,7 +75,7 @@ class PostLayout():
             theme["max_lines"] = text_box.max_lines
             theme["text_align"] = text_box.text_align
             
-            obj_dict["theme"] = theme
+            obj_dict["theme"] = dict(theme)
                         
             self.objects.append(obj_dict)
                                     
@@ -83,15 +83,15 @@ class PostLayout():
         if not self.compute_inner_box is None:
             obj_dict = {
                 "duration" : 5,
-                "start_time" : 0
+                "start_time" : 5
                 }
             theme = dict(self.theme["textbox"])
-            rect_settings = self.compute_inner_box(-150, 300)
+            rect_settings = self.compute_inner_box(-125, 300)
             obj_dict["object_type"] = "rectangle"
             theme["position"] = rect_settings[:2]
             theme["width"] = rect_settings[2]
             theme["height"] = rect_settings[3]
-            obj_dict["theme"] = theme
+            obj_dict["theme"] = dict(theme)
             
             
             self.objects.append(obj_dict)
@@ -125,7 +125,7 @@ class PostLayout():
             theme["max_lines"] = text_box.max_lines
             theme["text_align"] = text_box.text_align
             
-            obj_dict["theme"] = theme
+            obj_dict["theme"] = dict(theme)
                         
             self.objects.append(obj_dict)
         
@@ -174,7 +174,7 @@ class PostLayout():
             theme["max_lines"] = text_box.max_lines
             theme["text_align"] = text_box.text_align
             
-            obj_dict["theme"] = theme
+            obj_dict["theme"] = dict(theme)
                         
             self.objects.append(obj_dict)
         
@@ -205,7 +205,7 @@ class PostLayout():
                                 text = self.etymology.new_row["usage"],
                                 font_name = self.root_path + 'fonts/CharisSILI.ttf',
                                 text_align = "center",
-                                max_lines = 1)
+                                max_lines = None)
             
             obj_dict = {
                 "duration" : 5,
@@ -224,10 +224,11 @@ class PostLayout():
             theme["max_lines"] = text_box.max_lines
             theme["text_align"] = text_box.text_align
             
-            obj_dict["theme"] = theme
+            obj_dict["theme"] = dict(theme)
                         
             self.objects.append(obj_dict)
                 
+        
         obj_dict = {
             "duration" : 5,
             "start_time" : 5
@@ -252,13 +253,15 @@ class PostLayout():
                             height = rect_settings[3],
                             text = self.etymology.new_row["etym"],
                             font_name = self.root_path + 'fonts/CharisSILI.ttf',
-                            text_align = "top",
+                            text_align = "center",
                             max_lines = None)
         
+        # print(self.etymology.new_row["etym"])
         obj_dict = {
             "duration" : 5,
             "start_time" : 5
             }
+        # print(text_box.font_size, text_box.text_string)
         theme = dict(self.theme["textbox"])
         obj_dict["object_type"] = "text_box"
         theme["text_position"] = text_box.text_position
@@ -272,7 +275,9 @@ class PostLayout():
         theme["max_lines"] = text_box.max_lines
         theme["text_align"] = text_box.text_align
         
-        obj_dict["theme"] = theme
+        # print(theme)
+        
+        obj_dict["theme"] = dict(theme)
                     
         self.objects.append(obj_dict)
         

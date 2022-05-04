@@ -22,7 +22,7 @@ class Display():
             "background" : {
                 # If None, then default to the first colour in palette
                 # [R, G, B]
-                "colour" : np.random.sample([0, 0, 0], [255, 255, 255]),
+                "colour" : [[0, 0, 0], [255, 255, 255]][np.random.randint(0,2)],
                 },
             "bubble" : {
                 "n_max" : 50,
@@ -88,8 +88,8 @@ class Display():
                              ]
                         
         n_sides = np.random.randint(self.theme["polygon"]["n_sides_min"],
-                                    self.theme["polygon"]["n_sides_max"])
-        if n_sides == 9:
+                                    self.theme["polygon"]["n_sides_max"] + 1)
+        if n_sides == self.theme["polygon"]["n_sides_max"]:
             n_sides = 50
             
         self.theme["polygon"]["n_sides"] = n_sides
