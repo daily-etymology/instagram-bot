@@ -18,13 +18,15 @@ from PIL import Image
 from PIL import ImageFont
 from PIL import ImageDraw
 
+import os
 
-def start_render(SCREEN_WIDTH = 1000, SCREEN_HEIGHT = 1000):
+
+def gen_frames(etym_data, SCREEN_WIDTH = 1000, SCREEN_HEIGHT = 1000):
     # Create output folder
     Path("frames").mkdir(parents=True, exist_ok=True)   
 
     print("generating frames")
-    display = Display()
+    display = Display(etym_data)
 
     print("exporting frames")
     for c,frame in enumerate(display.frames):
@@ -104,3 +106,15 @@ def start_render(SCREEN_WIDTH = 1000, SCREEN_HEIGHT = 1000):
 
         print(f"\rframe:{c + 1} out of {len(display.frames)} \t {100*(c + 1)/len(display.frames):.3f}%", end="")
     print()  # New line
+    
+def render_ffmpeg():
+    filepath = os.path.abspath(__file__).replace("code/render.py", "")
+    frames_path = filepath + "code/frames/example%d.png"
+    out_path = filepath + "code/frames/o.mp4"
+    
+    cmd = f"ffmpeg -r 60 -i {frames_path} -c:v libx264 -preset veryslow -crf 18 -pix_fmt yuv420p {out_path} -y"
+    
+    os.system(cmd)
+
+if __name__ == "__main__":
+    render_ffmpeg()

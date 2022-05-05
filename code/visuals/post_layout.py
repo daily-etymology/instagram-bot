@@ -4,12 +4,13 @@
 Class to keep track of all objects used in the post. This includes locations
 of the text boxes and other things
 """
-from misc.etymology_helper import EtymologyHelper
+from visuals.helpers.colour_library import invert_colour
 from visuals.elements.text_box import TextBox
 import os
 
 class PostLayout():
-    def __init__(self, bg_object = None, theme = {}):
+    def __init__(self, etym_data, bg_object = None, theme = {}):
+        self.etym_data = etym_data
         self.compute_inner_box = None
         if not bg_object is None:
             if bg_object.obj_name == "polygon":
@@ -20,10 +21,11 @@ class PostLayout():
         if self.theme["textbox"]["box_colour"] is None:
             self.theme["textbox"]["box_colour"] = self.theme["background"]["colour"]
         
+        if self.theme["textbox"]["text_colour"] is None:
+            self.theme["textbox"]["text_colour"] = invert_colour(self.theme["background"]["colour"], is_hex = False)
+        
         self.objects = []
                 
-        self.etymology = EtymologyHelper()
-        
         self.root_path = os.path.abspath(__file__).replace("code/visuals/post_layout.py", "")
         
         self.gen_first_screen()
@@ -53,7 +55,7 @@ class PostLayout():
                                 y = rect_settings[1],
                                 width = rect_settings[2],
                                 height = rect_settings[3],
-                                text = self.etymology.new_row["phonetics"],
+                                text = self.etym_data["phonetics"],
                                 font_name = self.root_path + 'fonts/CharisSILI.ttf',
                                 text_align = "center",
                                 max_lines = 1)
@@ -103,7 +105,7 @@ class PostLayout():
                                 y = rect_settings[1],
                                 width = rect_settings[2],
                                 height = rect_settings[3],
-                                text = self.etymology.new_row["word"],
+                                text = self.etym_data["word"],
                                 font_name = self.root_path + 'fonts/CharisSILI.ttf',
                                 text_align = "center",
                                 max_lines = 1)
@@ -152,7 +154,7 @@ class PostLayout():
                                 y = rect_settings[1],
                                 width = rect_settings[2],
                                 height = rect_settings[3],
-                                text = self.etymology.new_row["word_type"],
+                                text = self.etym_data["word_type"],
                                 font_name = self.root_path + 'fonts/CharisSILI.ttf',
                                 text_align = "center",
                                 max_lines = 1)
@@ -185,7 +187,7 @@ class PostLayout():
             }
         if not self.compute_inner_box is None:
             theme = dict(self.theme["textbox"])
-            rect_settings = self.compute_inner_box(0, 200)
+            rect_settings = self.compute_inner_box(200, 200)
             obj_dict["object_type"] = "rectangle"
             theme["position"] = rect_settings[:2]
             theme["width"] = rect_settings[2]
@@ -202,7 +204,7 @@ class PostLayout():
                                 y = rect_settings[1],
                                 width = rect_settings[2],
                                 height = rect_settings[3],
-                                text = self.etymology.new_row["usage"],
+                                text = self.etym_data["usage"],
                                 font_name = self.root_path + 'fonts/CharisSILI.ttf',
                                 text_align = "center",
                                 max_lines = None)
@@ -251,7 +253,7 @@ class PostLayout():
                             y = rect_settings[1],
                             width = rect_settings[2],
                             height = rect_settings[3],
-                            text = self.etymology.new_row["etym"],
+                            text = self.etym_data["etym"],
                             font_name = self.root_path + 'fonts/CharisSILI.ttf',
                             text_align = "center",
                             max_lines = None)

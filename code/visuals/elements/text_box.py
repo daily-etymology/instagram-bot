@@ -76,7 +76,7 @@ class TextBox():
                 tmp_colour = hex_to_RGB(self.theme["text_colour"])
             else:
                 tmp_colour = self.theme["text_colour"]
-            
+
             # self.rgba = tmp_colour
             self.text_rgba = []
             for c, opacity in enumerate(self.opacity):
@@ -356,11 +356,6 @@ if __name__ == "__main__":
     
     root_path = os.path.abspath(__file__).replace("code/visuals/elements/text_box.py", "")
     
-    #dummy_text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque elementum sem nec tortor varius, vel molestie tortor consectetur. Morbi eleifend est a nisi molestie maximus. Aliquam condimentum vulputate arcu eget dapibus. Quisque interdum purus eget lacus vestibulum pellentesque. Quisque ultricies eget nunc eget hendrerit. Vestibulum lobortis, orci ac ultricies pharetra, augue odio viverra enim, sed finibus elit nunc eget neque. Fusce at leo pellentesque, dapibus neque pharetra, consequat orci. Sed et nisi arcu. Cras sit amet pharetra ipsum. Aliquam fringilla lectus mattis mi efficitur, eget blandit augue pharetra. Quisque mollis egestas orci quis facilisis. Morbi ullamcorper enim ac elit pharetra bibendum. Donec malesuada mollis leo, ut aliquam dui iaculis mollis. Mauris placerat enim tellus, ut suscipit erat laoreet vitae. In hac habitasse platea dictumst. Etiam nec libero nibh."
-    #dummy_text = "Test this reasonably long string. Twinkle twinkle little star, how I wonder what you are. Shinning long string. Twinkle twinkle up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, long string. Twinkle twinkle how I wonder what you are. Shinning long string. Twinkle twinkle up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, how I wonder what you are. Twinkle twinkle little star, how I wonder what you are. Shinning up above so high, like a diamond in the sky. Twinkle twinkle little star, long string. Twinkle twinkle how I wonder what you are."
-    #dummy_text = "This is some random text that has no meaning. I just want to fill in the space with random nonsense which looks somewhat legit."
-    #dummy_text = "Hello, how are you?"
-    
     SCREEN_WIDTH = 1000
     SCREEN_HEIGHT = 1000
     
@@ -410,11 +405,7 @@ if __name__ == "__main__":
                             box_points_top[2],
                             box_points_top[3],
                             opacity = 0))
-        
-    # # Draw text
-    # d.append(draw.Text('Basic text', 40, -100, 350, 
-    #                    fill='blue', font = "fonts/The Californication.ttf"))  # Text with font size 8
-    
+
     d.savePng('example.png')
      
     image = Image.open('example.png')
@@ -430,12 +421,6 @@ if __name__ == "__main__":
                         width = box_points_bottom[2],
                         height = box_points_bottom[3],
                         text = "By the 19th century we already had arrogant, haughty, and supercilious, but there was apparently need for more because by mid-century the language had garnered two others: toplofty and its variant toploftical. The source of these is likely the phrase top loft, which refers to the highest story of a building.",
-                        #font_name = 'fonts/Spring in May.ttf',
-                        #font_name = 'fonts/The Californication.ttf',
-                        #font_name = 'fonts/Afterglow-Regular.ttf',
-                        #font_name = 'fonts/Hello Valentina.ttf',
-                        #font_name = 'fonts/Birds of Paradise.ttf',
-                        #font_name = 'fonts/Baby Doll.ttf',
                         font_name = root_path + 'fonts/CharisSILI.ttf',
                        
                         max_lines = None)  
@@ -451,12 +436,6 @@ if __name__ == "__main__":
                        width = box_points_top[2],
                        height = box_points_top[3],
                        text = "\"Hello, how are you?\"",
-                       #font_name = 'fonts/Spring in May.ttf',
-                       #font_name = 'fonts/The Californication.ttf',
-                       #font_name = 'fonts/Afterglow-Regular.ttf',
-                       #font_name = 'fonts/Hello Valentina.ttf',
-                       #font_name = 'fonts/Birds of Paradise.ttf',
-                       #font_name = 'fonts/Baby Doll.ttf',
                        font_name = root_path + 'fonts/Louis George Cafe/Louis George Cafe Bold.ttf',
                        
                        max_lines = None)  

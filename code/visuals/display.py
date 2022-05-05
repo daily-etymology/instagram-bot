@@ -15,6 +15,7 @@ from visuals.post_layout import PostLayout
     
 class Display():
     def __init__(self,
+                 etym_data,
                  duration = 10,
                  frame_rate = 60):
         
@@ -67,7 +68,7 @@ class Display():
                 "n_colours_in_palette" : 5
                 }
             }
-        
+        self.etym_data = etym_data        
         self.frame_rate = frame_rate
         self.duration = duration
         self.frames = self.combine_objects(self.gen_objects())
@@ -105,6 +106,7 @@ class Display():
         else:
             assert type(self.theme["background"]["colour"]) == list, "bg colour should be in [R, G, B] form"
             bg_colour = self.theme["background"]["colour"]
+        self.theme["background"]["palette"] = palettes[0]
         b = Animated_object(duration = self.duration, 
                             start_time = 0, 
                             object_type = "background",
@@ -158,14 +160,6 @@ class Display():
                 
         for i in range(n_bubble):
             col_ids = np.random.choice(np.arange(len(palettes)),2)
-            
-            # Bubble theme
-            # theme = {
-            #     "start_colour" : RGB_to_hex(palettes[col_ids[0]]),
-            #     "end_colour" : RGB_to_hex(palettes[col_ids[1]]),
-            #     "start_radius" : np.random.uniform(min_radius,max_radius),
-            #     "end_radius" : np.random.uniform(min_radius,max_radius)
-            #     }
             
             theme = self.theme["bubble"]
             theme["start_colour"] = RGB_to_hex(palettes[col_ids[0]])
@@ -239,7 +233,7 @@ class Display():
                                 theme = particle)
             objects.append(b)
                 
-        post_group = PostLayout(polygon.the_object, self.theme)        
+        post_group = PostLayout(self.etym_data, polygon.the_object, self.theme)        
         for obj in post_group.objects:
             b = Animated_object(duration = obj["duration"], 
                                 start_time = obj["start_time"],
