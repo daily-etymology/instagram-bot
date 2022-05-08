@@ -6,7 +6,8 @@ produced output.
 ![](examples/o.gif)
 
 ## Installation
-It should be fairly simple to install this project.
+It should be fairly simple to install this project (if you are on Ubuntu), if 
+you are on Windows, then, well, feel free to make my code cross platform :)
 
 1. install ffmpeg (google it)
 2. create a chrome profile called Person 1
