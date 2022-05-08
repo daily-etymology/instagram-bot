@@ -19,8 +19,14 @@ class EtymologyHelper():
         self.new_df = df[df["usage"].isna() == False]
         
         self.hashtags = self.get_hastags()
-
-        self.row_id = np.random.randint(0, self.new_df.shape[0] - 1)
+        
+        self.row_id = None
+        while self.row_id is None:
+            self.row_id = np.random.randint(0, self.new_df.shape[0] - 1)
+            
+            # Skip some rows
+            if self.row_id in [299, 641]:
+                self.row_id = None
         self.new_row = self.new_df.iloc[self.row_id]
         
         self.caption = self.gen_caption()
