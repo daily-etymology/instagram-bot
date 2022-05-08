@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-
+Bubble class that keeps track of bubble's properties such as colour and location
 """
 
 import numpy as np

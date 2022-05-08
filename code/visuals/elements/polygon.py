@@ -75,9 +75,6 @@ class Polygon():
             if coordinate_bottom:
                 box_coordinates.append(coordinate_bottom)
                 bottom_coordinates.append(coordinate_bottom)
-                
-        # print(top_coordinates)
-        # print(bottom_coordinates)
         
         x_top_list = []        
         for x in top_coordinates:
@@ -90,15 +87,9 @@ class Polygon():
             x_bottom_list.append(x[0])    
         x_bottom_left = min(x_bottom_list)
         x_bottom_right = max(x_bottom_list)
-        
-        # print(x_top_left, x_top_right, x_bottom_left, x_bottom_right)
-        
-        #x_top_left, x_top_right = min(top_coordinates[0][0],top_coordinates[1][0]), max(top_coordinates[0][0],top_coordinates[1][0])
-        #x_bottom_left, x_bottom_right = min(bottom_coordinates[0][0],bottom_coordinates[1][0]), max(bottom_coordinates[0][0],bottom_coordinates[1][0])
+       
         # Compute inner points
         x_left, x_right = max(x_top_left, x_bottom_left), min(x_top_right, x_bottom_right)
-        
-        # print(x_left, x_right)
         
         x, y, width, height = x_left, y_bottom, abs(x_left - x_right), height
         return x, y, width, height
@@ -110,10 +101,6 @@ class Polygon():
         # Compute y = mx + c coeficients for two lines
         if abs(l1_start[0] - l1_end[0]) < 10**-12:
             y_ = m2 * l1_start[0] + c2
-            
-            # print(l1_start, l1_end, l2_start, l2_end)
-            # print(y_, min(l1_start[1],l1_end[1]) <= y_ <= max(l1_start[1],l1_end[1]))
-            # print()
             
             if min(l1_start[1],l1_end[1]) <= y_ <= max(l1_start[1],l1_end[1]):
                 return l1_start[0], y_

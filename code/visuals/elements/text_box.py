@@ -77,16 +77,12 @@ class TextBox():
             else:
                 tmp_colour = self.theme["text_colour"]
 
-            # self.rgba = tmp_colour
             self.text_rgba = []
             for c, opacity in enumerate(self.opacity):
                 self.text_rgba.append([tmp_colour[0],
                                   tmp_colour[1],
                                   tmp_colour[2],
                                   int(self.opacity[c] * 255)])
-                                  
-            # print(self.rgba)
-            
         
     def calc_opacity(self):
         start_frame_0 = 0
@@ -120,13 +116,10 @@ class TextBox():
         
         if self.max_lines == 1:
             combine_text = self.text_string
-            #print(combine_text)
             
             while 1:
                 tmp_font = ImageFont.truetype(self.font_name, font_size)
                 new_shape = self.compute_size(combine_text, tmp_font)
-                #new_shape = tmp_font.getsize(combine_text)                
-                #new_shape = self.get_text_dimensions(combine_text, tmp_font)
                 
                 if new_shape[0] > self.width or new_shape[1] > self.height:
                     font_size -= 1
@@ -147,11 +140,7 @@ class TextBox():
                 
                 if solution["valid"]:
                     solutions.append(solution)
-                
-                # if solution["new_shape"][1] > self.height:
-                #     break
-                
-            
+                            
         best_score = 2 ** 31 - 1
         best_id = 2 ** 31 - 1
         max_font = -1
@@ -159,13 +148,8 @@ class TextBox():
             if s["font_size"] > max_font:
                 max_font = s["font_size"]
                 best_id = c
-            # if s["score"] < best_score:
-            #     best_score = s["score"]
-            #     best_id = c
-        # print(solutions)
-        best_solution = solutions[best_id]
 
-        # print(best_score, best_solution)
+        best_solution = solutions[best_id]
         
         font_size = best_solution["font_size"]
         tmp_font = ImageFont.truetype(self.font_name, font_size)
@@ -215,7 +199,6 @@ class TextBox():
             score += (width - self.width) ** 2
             
         final_shape = self.compute_size(combined_str, tmp_font)
-        # print(line_sizes, height, widths, score, final_shape)
         
         valid_sol = True
         if final_shape[0] > self.width or final_shape[1] > self.height:
@@ -247,15 +230,11 @@ class TextBox():
             m_string += text_string[index]
             
             new_shape = self.compute_size(m_string, tmp_font)
-            
-            # print(new_shape, [self.width, self.height])
+
             if new_shape[0] > self.width or new_shape[1] > self.height:
                 break       
             index += 1
-        # print(m_string)
-            
         
-        # print(f"font_size: {font_size} \t m: {len(m_string)}")
         l = [len(i) for i in text_list]
         n = len(l)
         M = len(m_string)
@@ -263,16 +242,10 @@ class TextBox():
         sol = solveWordWrap(l, n, M)
                 
         line_solutions = printSolution(sol[0], sol[1])
-        # print(line_solutions[1], M, l)
         row_ids = solution_to_rownumber(line_solutions[1])
                         
         full_string = ""
         prev_row = 0
-        
-        
-        # print(len(row_ids), len(text_list))
-        # print(sol)
-        # print(row_ids)
         
         for c, row in enumerate(row_ids):
             sep_char = " "
@@ -290,19 +263,9 @@ class TextBox():
         
         # Compute the textbox size
         new_shape = self.compute_size(full_string, tmp_font)
-        # print(full_string)
-        # print(row_ids)
-        # print(new_shape, [self.width, self.height])
         
         score = (new_shape[0] - self.width) ** 2 + (new_shape[1] - self.height) ** 2
-        # print(score)
-        
-        # solution["score"] = score
-        # solution["new_shape"] = new_shape
-        # solution["full_string"] = full_string
 
-        # return solution
-        
         if new_shape[0] < self.width and new_shape[1] < self.height:
             solution["score"] = score
             solution["new_shape"] = new_shape
@@ -342,7 +305,6 @@ class TextBox():
             x = self.x - (self.width + self.text_shape[0]) / 2
             y = self.y - (self.height + self.text_shape[1]) / 2
             
-        # print(x,y, self.text_shape, (self.width, self.height), self.font_size)
         return x,y
 
 
@@ -445,6 +407,3 @@ if __name__ == "__main__":
               )
     
     image.save('example.png')
-
-    
-    
