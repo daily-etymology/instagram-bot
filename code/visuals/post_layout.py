@@ -253,7 +253,8 @@ class PostLayout():
                             y = rect_settings[1],
                             width = rect_settings[2],
                             height = rect_settings[3],
-                            text = self.etym_data["etym"],
+                            text = self.etym_data["def"] + " " +  
+                                            self.etym_data["etym"],
                             font_name = self.root_path + 'fonts/CharisSILI.ttf',
                             text_align = "center",
                             max_lines = None)

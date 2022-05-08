@@ -66,6 +66,8 @@ Etymology: \t {5}
 
 Source: \t {6}
 {7}
+
+
 {8}
 """.format(string.capwords(self.new_row["word"]),
 word_type_article,
@@ -74,8 +76,8 @@ self.new_row["usage"],
 self.new_row["def"],
 self.new_row["etym"],
 self.new_row["url"],
-" ".join(self.hashtags),
-date_str
+date_str,
+" ".join(self.hashtags)
 )
         
         return caption_string
@@ -86,5 +88,5 @@ date_str
     
 if __name__ == "__main__":
     etym = EtymologyHelper()
-    # print(etym.new_row)
+    print(etym.new_row)
     # print(etym.gen_caption())
